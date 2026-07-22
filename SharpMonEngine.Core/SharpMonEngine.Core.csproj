@@ -5,8 +5,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\SharpMonEngine.Battle.Core\SharpMonEngine.Battle.Core.csproj" />
-    </ItemGroup>
-
 </Project>

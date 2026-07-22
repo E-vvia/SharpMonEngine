@@ -3,11 +3,10 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
         <Nullable>enable</Nullable>
-        <RootNamespace>SharpMonEngine</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SharpMonEngine.Battle.Core\SharpMonEngine.Battle.Core.csproj" />
+      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>
