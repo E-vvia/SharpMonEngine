@@ -10,4 +10,8 @@
       <ProjectReference Include="..\SharpMonEngine.Battle.Core\SharpMonEngine.Battle.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Builder\" />
+    </ItemGroup>
+
 </Project>

@@ -41,7 +41,7 @@ namespace SharpMonEngine.Services
             double damage = 1;
             double baseDamage = CalculateBaseDamage(damageCalculationContext, calculationModifier);
             double targets = damageCalculationContext.Multitarget ? 0.75 : 1;
-            double weather = stabCalculationModifier.GetModifier(damageCalculationContext);
+            double weather = weatherCalculationModifier.GetModifier(damageCalculationContext);
             double flags = flagsCalculationModifiers.Aggregate(1.0,
                 (total, modifier) => total * modifier.GetModifier(damageCalculationContext));
 
@@ -50,8 +50,9 @@ namespace SharpMonEngine.Services
             double stab = stabCalculationModifier.GetModifier(damageCalculationContext);
             double type = typeCalculationModifier.GetModifier(damageCalculationContext);
 
-
-            return damage * baseDamage * targets * weather * flags * criticalHit * random * stab * type;
+            double totalDamage = damage * baseDamage * targets * weather * flags * criticalHit * random * stab * type;
+            double floor = Math.Floor(totalDamage);
+            return floor;
         }
 
         private double CalculateBaseDamage(DamageCalculationContext damageCalculationContext,
@@ -62,8 +63,8 @@ namespace SharpMonEngine.Services
                     calculationModifier.GetModifier(damageCalculationContext) *
                     damageCalculationContext.Attacker.CurrentAtk /
                     damageCalculationContext.Defender.CurrentDef / 50 + 2);
-
-            return damage;
+            double floor = Math.Floor(damage);
+            return floor;
         }
 
         private bool IsCriticalHit()
@@ -80,7 +81,7 @@ namespace SharpMonEngine.Services
                     .AbilityId);
 
             ICalculationModifier targetStatusCritHitModifier =
-                _calculationModifierProvider.GetAbilityCriticalHitCalculationModifier(damageCalculationContext.Defender
+                _calculationModifierProvider.GetStatusCriticalHitCalculationModifier(damageCalculationContext.Defender
                     .Status);
 
 
@@ -94,7 +95,7 @@ namespace SharpMonEngine.Services
                     .AbilityId);
 
             ICalculationModifier userStatusCritHitModifier =
-                _calculationModifierProvider.GetAbilityCriticalHitCalculationModifier(damageCalculationContext.Attacker
+                _calculationModifierProvider.GetStatusCriticalHitCalculationModifier(damageCalculationContext.Attacker
                     .Status);
 
 

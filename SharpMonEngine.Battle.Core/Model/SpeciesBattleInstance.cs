@@ -8,7 +8,7 @@ namespace SharpMonEngine.Battle.Core.Model
         private readonly ISpeciesInstance _speciesInstance;
         public int AbilityId => _speciesInstance.AbilityId;
         public MonType Type1 => _speciesInstance.Type1;
-        public MonType Type2 => _speciesInstance.Type1;
+        public MonType Type2 => _speciesInstance.Type2;
         public int Level => _speciesInstance.Level;
         public int CurrentHp { get; set; }
         public double CurrentAtk => GetCurrentStatValue(AtkLevel, _speciesInstance.Atk);

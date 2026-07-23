@@ -4,9 +4,9 @@ namespace SharpMonEngine.Core.Interfaces.Model
 {
     public interface ISpeciesInstance
     {
-        public int AbilityId { get; set; }
-        public MonType Type1 { get; set; }
-        public MonType Type2 { get; set; }
+        public int AbilityId { get;  }
+        public MonType Type1 { get;  }
+        public MonType Type2 { get; }
         int Level { get; }
         int Atk { get; }
         int Def { get; }
