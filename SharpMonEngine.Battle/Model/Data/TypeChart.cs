@@ -4,8 +4,6 @@ namespace SharpMonEngine.Model.Data
 {
     public static class TypeChart
     {
-        // Indexed [attacker, defender] using MonType as int index.
-        // None and Tera rows/cols default to neutral (1x).
         public static readonly float[,] Effectiveness = new float[20, 20]
         {
             //           None  Nor   Fire  Wat   Gra   Ele   Ice   Fig   Poi   Gro   Fly   Psy   Bug   Rock  Ghost Drag  Dark  Steel Fairy Tera

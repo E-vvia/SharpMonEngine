@@ -21,7 +21,7 @@ namespace SharpMonEngine.Services
             _randomProviderService = randomProviderService;
         }
 
-        public double CalculateDamage(DamageCalculationContext damageCalculationContext)
+        public int CalculateDamage(DamageCalculationContext damageCalculationContext)
         {
             ICalculationModifier calculationModifier =
                 _calculationModifierProvider.GetMoveCalculationModifier(damageCalculationContext.UsedMove.Id);
@@ -38,33 +38,45 @@ namespace SharpMonEngine.Services
             ICalculationModifier typeCalculationModifier =
                 _calculationModifierProvider.GetTypeCalculationModifier(damageCalculationContext.UsedMove.Id);
 
-            double damage = 1;
-            double baseDamage = CalculateBaseDamage(damageCalculationContext, calculationModifier);
-            double targets = damageCalculationContext.Multitarget ? 0.75 : 1;
-            double weather = weatherCalculationModifier.GetModifier(damageCalculationContext);
-            double flags = flagsCalculationModifiers.Aggregate(1.0,
+            float damage = 1;
+            float baseDamage = CalculateBaseDamage(damageCalculationContext, calculationModifier);
+            float targets = damageCalculationContext.Multitarget ? 0.75f : 1;
+            float weather = weatherCalculationModifier.GetModifier(damageCalculationContext);
+            float flags = flagsCalculationModifiers.Aggregate(1.0f,
                 (total, modifier) => total * modifier.GetModifier(damageCalculationContext));
 
-            double criticalHit = GetCriticalHitModifier(damageCalculationContext);
-            double random = _randomProviderService.Next(85, 101) / 100.0f;
-            double stab = stabCalculationModifier.GetModifier(damageCalculationContext);
-            double type = typeCalculationModifier.GetModifier(damageCalculationContext);
+            float criticalHit = GetCriticalHitModifier(damageCalculationContext);
+            float random = (float)(MathF.Truncate(GetRandom() * 100) / 100.0f);
+            float stab = stabCalculationModifier.GetModifier(damageCalculationContext);
+            float type = typeCalculationModifier.GetModifier(damageCalculationContext);
 
-            double totalDamage = damage * baseDamage * targets * weather * flags * criticalHit * random * stab * type;
-            double floor = Math.Floor(totalDamage);
-            return floor;
+            float totalDamage =
+                damage *
+                RoundHalfUp(baseDamage) *
+                targets *
+                weather *
+                flags *
+                criticalHit *
+                random *
+                stab *
+                type;
+            return (int)totalDamage;
         }
 
-        private double CalculateBaseDamage(DamageCalculationContext damageCalculationContext,
+        private float GetRandom()
+        {
+            return (_randomProviderService.Next(85, 101) / 100.0f);
+        }
+
+        private float CalculateBaseDamage(DamageCalculationContext damageCalculationContext,
             ICalculationModifier calculationModifier)
         {
-            double damage =
-                ((2.0 * damageCalculationContext.Attacker.Level / 5 + 2) *
-                    calculationModifier.GetModifier(damageCalculationContext) *
-                    damageCalculationContext.Attacker.CurrentAtk /
-                    damageCalculationContext.Defender.CurrentDef / 50 + 2);
-            double floor = Math.Floor(damage);
-            return floor;
+            float damage =
+                ((((2.0f * damageCalculationContext.Attacker.Level / 5) + 2) *
+                  calculationModifier.GetModifier(damageCalculationContext) *
+                  damageCalculationContext.Attacker.CurrentAtk /
+                  damageCalculationContext.Defender.CurrentDef) / 50) + 2;
+            return damage;
         }
 
         private bool IsCriticalHit()
@@ -73,7 +85,7 @@ namespace SharpMonEngine.Services
             return rValue >= 50;
         }
 
-        private double GetCriticalHitModifier(DamageCalculationContext damageCalculationContext)
+        private float GetCriticalHitModifier(DamageCalculationContext damageCalculationContext)
         {
             damageCalculationContext.WasCriticalHit = IsCriticalHit();
             ICalculationModifier targetAbilityCritHitModifier =
@@ -99,7 +111,7 @@ namespace SharpMonEngine.Services
                     .Status);
 
 
-            double targetAbilityCritModifierValue =
+            float targetAbilityCritModifierValue =
                 targetAbilityCritHitModifier.GetModifier(damageCalculationContext);
 
             if (damageCalculationContext.WasCriticalHit && targetAbilityCritModifierValue < 1.5f)
@@ -107,7 +119,7 @@ namespace SharpMonEngine.Services
                 return targetAbilityCritModifierValue;
             }
 
-            double targetStatusAbilityCritModifierValue =
+            float targetStatusAbilityCritModifierValue =
                 targetStatusCritHitModifier.GetModifier(damageCalculationContext);
 
             if (damageCalculationContext.WasCriticalHit && targetStatusAbilityCritModifierValue < 1.5f)
@@ -115,7 +127,7 @@ namespace SharpMonEngine.Services
                 return targetStatusAbilityCritModifierValue;
             }
 
-            double moveCriticalHitModifierValue =
+            float moveCriticalHitModifierValue =
                 moveCriticalHitModifier.GetModifier(damageCalculationContext);
 
             if (damageCalculationContext.WasCriticalHit && moveCriticalHitModifierValue > 1)
@@ -123,7 +135,7 @@ namespace SharpMonEngine.Services
                 return moveCriticalHitModifierValue;
             }
 
-            double userAbilityCriticalHitModifierValue =
+            float userAbilityCriticalHitModifierValue =
                 userAbilityCritHitModifier.GetModifier(damageCalculationContext);
 
             if (damageCalculationContext.WasCriticalHit && userAbilityCriticalHitModifierValue > 1)
@@ -131,7 +143,7 @@ namespace SharpMonEngine.Services
                 return userAbilityCriticalHitModifierValue;
             }
 
-            double userStatusCriticalHitModifierValue =
+            float userStatusCriticalHitModifierValue =
                 userStatusCritHitModifier.GetModifier(damageCalculationContext);
 
             if (damageCalculationContext.WasCriticalHit && userStatusCriticalHitModifierValue > 1)
@@ -140,6 +152,11 @@ namespace SharpMonEngine.Services
             }
 
             return damageCalculationContext.WasCriticalHit ? 1.5f : 1;
+        }
+
+        public static int RoundHalfUp(float value)
+        {
+            return (int)MathF.Floor(value + 0.5f);
         }
     }
 }

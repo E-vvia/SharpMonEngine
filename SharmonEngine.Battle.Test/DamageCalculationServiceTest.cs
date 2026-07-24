@@ -1,7 +1,5 @@
 using Moq;
-using SharmonEngine.Battle.Test.Services;
 using SharpMonEngine.Battle.Core.Context.Services;
-using SharpMonEngine.Battle.Core.Interfaces.Providers;
 using SharpMonEngine.Battle.Core.Interfaces.Services;
 using SharpMonEngine.Battle.Core.Model;
 using SharpMonEngine.Core.Interfaces.Model;
@@ -16,89 +14,144 @@ namespace SharmonEngine.Battle.Test
     [TestFixture]
     public class DamageCalculationServiceTest
     {
-        private const int MovePower = 80;
-
-        private IDamageCalculationService? _damageCalculationService;
-
-        [SetUp]
-        public void SetUp()
+        public class DamageTestCase
         {
-            CalculationModifierCollection calculationModifierCollection = new CalculationModifierCollection();
-            ICalculationModifierProvider calculationModifierProvider =
-                new CalculationModifierProvider(calculationModifierCollection);
+            public int Power { get; init; }
+            public MonType Type { get; init; }
+            public int RandomRoll { get; init; }
+            public int ExpectedDamage { get; init; }
 
-            _damageCalculationService = new DamageCalculationService(
-                calculationModifierProvider,
-                new CalculationServiceRandomProviderService());
+            public override string ToString()
+            {
+                return $"{Power} power {Type} roll {RandomRoll} => {ExpectedDamage}";
+            }
+        }
+
+        private static IEnumerable<DamageTestCase> CreateDamageCases(
+            int power,
+            MonType type,
+            params (int Roll, int Damage)[] rolls)
+        {
+            foreach (var (roll, damage) in rolls)
+            {
+                yield return new DamageTestCase
+                {
+                    Power = power,
+                    Type = type,
+                    RandomRoll = roll,
+                    ExpectedDamage = damage
+                };
+            }
+        }
+
+        public static IEnumerable<DamageTestCase> DamageCases()
+        {
+            foreach (var testCase in CreateDamageCases(
+                         80,
+                         MonType.Normal,
+                         (85, 58),
+                         (86, 59),
+                         (87, 60),
+                         (88, 60),
+                         (89, 61),
+                         (90, 62),
+                         (91, 62),
+                         (92, 63),
+                         (93, 64),
+                         (94, 64),
+                         (95, 65),
+                         (96, 66),
+                         (97, 66),
+                         (98, 67),
+                         (99, 68),
+                         (100, 69)))
+            {
+                yield return testCase;
+            }
+
+            foreach (var testCase in CreateDamageCases(
+                         80,
+                         MonType.Grass,
+                         (85, 21),
+                         (86, 22),
+                         (87, 22),
+                         (88, 22),
+                         (89, 23),
+                         (90, 23),
+                         (91, 23),
+                         (92, 23),
+                         (93, 24),
+                         (94, 24),
+                         (95, 24),
+                         (96, 24),
+                         (97, 25),
+                         (98, 25),
+                         (99, 25),
+                         (100, 25)))
+            {
+                yield return testCase;
+            }
         }
 
         private static Mock<ISpeciesInstance> CreateLevel100BulbasaurMock()
         {
-            Mock<ISpeciesInstance> speciesInstanceMoq = new Mock<ISpeciesInstance>();
+            Mock<ISpeciesInstance> species = new();
 
-            speciesInstanceMoq.Setup(s => s.Type1).Returns(MonType.Grass);
-            speciesInstanceMoq.Setup(s => s.Type2).Returns(MonType.Poison);
-            speciesInstanceMoq.Setup(s => s.Level).Returns(100);
+            species.Setup(s => s.Type1).Returns(MonType.Grass);
+            species.Setup(s => s.Type2).Returns(MonType.Poison);
+            species.Setup(s => s.Level).Returns(100);
 
-            speciesInstanceMoq.Setup(s => s.Atk).Returns(103);
-            speciesInstanceMoq.Setup(s => s.Def).Returns(103);
-            speciesInstanceMoq.Setup(s => s.SpAtk).Returns(135);
-            speciesInstanceMoq.Setup(s => s.SpDef).Returns(135);
-            speciesInstanceMoq.Setup(s => s.Speed).Returns(95);
+            species.Setup(s => s.Atk).Returns(103);
+            species.Setup(s => s.Def).Returns(103);
+            species.Setup(s => s.SpAtk).Returns(135);
+            species.Setup(s => s.SpDef).Returns(135);
+            species.Setup(s => s.Speed).Returns(95);
 
-            return speciesInstanceMoq;
+            return species;
         }
 
-        private static Mock<IMoveData> CreateTackleMock()
+        private static Mock<IMoveData> CreateMoveMock(int power, MonType type)
         {
-            Mock<IMoveData> moveMoq = new Mock<IMoveData>();
-            moveMoq.SetupAllProperties();
+            Mock<IMoveData> move = new();
 
-            moveMoq.Setup(m => m.Power).Returns(MovePower);
-            moveMoq.Setup(m => m.Type).Returns(MonType.Normal);
+            move.Setup(m => m.Power).Returns(power);
+            move.Setup(m => m.Type).Returns(type);
 
-            return moveMoq;
+            return move;
         }
 
-        [TestCase(85, 58)]
-        [TestCase(86, 59)]
-        [TestCase(87, 60)]
-        [TestCase(88, 60)]
-        [TestCase(89, 61)]
-        [TestCase(90, 62)]
-        [TestCase(91, 62)]
-        [TestCase(92, 63)]
-        [TestCase(93, 64)]
-        [TestCase(94, 64)]
-        [TestCase(95, 65)]
-        [TestCase(96, 66)]
-        [TestCase(97, 66)]
-        [TestCase(98, 67)]
-        [TestCase(99, 68)]
-        [TestCase(100, 69)]
-        public void CalculateDamageReturnsExpectedDamage( int randomRoll, int expectedResult)
+        [Test, TestCaseSource(nameof(DamageCases))]
+        public void CalculateDamageReturnsExpectedDamage(DamageTestCase testCase)
         {
-            Mock<IRandomProviderService> randomMoq = new Mock<IRandomProviderService>();
-            randomMoq.Setup(r => r.Next(0, 100)).Returns(0);
-            randomMoq.Setup(r => r.Next(85, 101)).Returns(randomRoll);
+            Mock<IRandomProviderService> random = new();
 
-            IDamageCalculationService damageCalculationService = new DamageCalculationService(
-                new CalculationModifierProvider(new CalculationModifierCollection()),
-                randomMoq.Object);
+            random.Setup(r => r.Next(0, 100))
+                .Returns(0);
 
-            Mock<ISpeciesInstance> attackerSpecies = CreateLevel100BulbasaurMock();
-            Mock<ISpeciesInstance> defenderSpecies = CreateLevel100BulbasaurMock();
-            SpeciesBattleInstance attacker = new SpeciesBattleInstance(attackerSpecies.Object);
-            SpeciesBattleInstance defender = new SpeciesBattleInstance(defenderSpecies.Object);
+            random.Setup(r => r.Next(85, 101))
+                .Returns(testCase.RandomRoll);
 
-            Mock<IMoveData> tackle = CreateTackleMock();
-            DamageCalculationContext context = new DamageCalculationContext(attacker, defender, tackle.Object);
+            IDamageCalculationService service =
+                new DamageCalculationService(
+                    new CalculationModifierProvider(
+                        new CalculationModifierCollection()),
+                    random.Object);
 
-            double? damage = damageCalculationService.CalculateDamage(context);
+            SpeciesBattleInstance attacker =
+                new(CreateLevel100BulbasaurMock().Object);
 
-            Assert.That(damage, Is.Not.Null);
-            Assert.That(damage, Is.Not.NaN);
-            Assert.That(damage, Is.EqualTo(expectedResult));
+            SpeciesBattleInstance defender =
+                new(CreateLevel100BulbasaurMock().Object);
+
+            IMoveData move =
+                CreateMoveMock(testCase.Power, testCase.Type).Object;
+
+            DamageCalculationContext context =
+                new(attacker, defender, move);
+
+            int? damage = service.CalculateDamage(context);
+
+            Assert.That(damage, Is.EqualTo(testCase.ExpectedDamage));
         }
     }
 }

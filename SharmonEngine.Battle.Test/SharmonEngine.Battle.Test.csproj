@@ -26,4 +26,8 @@
       <ProjectReference Include="..\SharpMonEngine.Battle\SharpMonEngine.Battle.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Model\" />
+    </ItemGroup>
+
 </Project>

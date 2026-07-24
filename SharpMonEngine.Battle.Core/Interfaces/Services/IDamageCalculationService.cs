@@ -4,6 +4,6 @@ namespace SharpMonEngine.Battle.Core.Interfaces.Services
 {
     public interface IDamageCalculationService
     {
-        double CalculateDamage(DamageCalculationContext damageCalculationContext);
+        int CalculateDamage(DamageCalculationContext damageCalculationContext);
     }
 }
