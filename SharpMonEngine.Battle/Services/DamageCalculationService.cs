@@ -5,20 +5,20 @@ using SharpMonEngine.Battle.Core.Context.Services;
 using SharpMonEngine.Battle.Core.Interfaces.Modifiers;
 using SharpMonEngine.Battle.Core.Interfaces.Providers;
 using SharpMonEngine.Battle.Core.Interfaces.Services;
-using SharpMonEngine.Core.Interfaces.Services;
+using SharpMonEngine.Core.Interfaces.Providers;
 
 namespace SharpMonEngine.Services
 {
     public class DamageCalculationService : IDamageCalculationService
     {
         private readonly ICalculationModifierProvider _calculationModifierProvider;
-        private readonly IRandomProviderService _randomProviderService;
+        private readonly IRandomProvider _randomProvider;
 
         public DamageCalculationService(ICalculationModifierProvider calculationModifierProvider,
-            IRandomProviderService randomProviderService)
+            IRandomProvider randomProvider)
         {
             _calculationModifierProvider = calculationModifierProvider;
-            _randomProviderService = randomProviderService;
+            _randomProvider = randomProvider;
         }
 
         public int CalculateDamage(DamageCalculationContext damageCalculationContext)
@@ -65,7 +65,7 @@ namespace SharpMonEngine.Services
 
         private float GetRandom()
         {
-            return (_randomProviderService.Next(85, 101) / 100.0f);
+            return (_randomProvider.Next(85, 101) / 100.0f);
         }
 
         private float CalculateBaseDamage(DamageCalculationContext damageCalculationContext,
@@ -81,8 +81,8 @@ namespace SharpMonEngine.Services
 
         private bool IsCriticalHit()
         {
-            int rValue = _randomProviderService.Next(0, 100);
-            return rValue >= 50;
+            int rValue = _randomProvider.Next(2);
+            return rValue == 0;
         }
 
         private float GetCriticalHitModifier(DamageCalculationContext damageCalculationContext)

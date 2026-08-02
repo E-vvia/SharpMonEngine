@@ -3,7 +3,7 @@ using SharpMonEngine.Battle.Core.Context.Services;
 using SharpMonEngine.Battle.Core.Interfaces.Services;
 using SharpMonEngine.Battle.Core.Model;
 using SharpMonEngine.Core.Interfaces.Model;
-using SharpMonEngine.Core.Interfaces.Services;
+using SharpMonEngine.Core.Interfaces.Providers;
 using SharpMonEngine.Core.Model;
 using SharpMonEngine.Model.Providers;
 using SharpMonEngine.Providers;
@@ -93,40 +93,14 @@ namespace SharmonEngine.Battle.Test
             }
         }
 
-        private static Mock<ISpeciesInstance> CreateLevel100BulbasaurMock()
-        {
-            Mock<ISpeciesInstance> species = new();
-
-            species.Setup(s => s.Type1).Returns(MonType.Grass);
-            species.Setup(s => s.Type2).Returns(MonType.Poison);
-            species.Setup(s => s.Level).Returns(100);
-
-            species.Setup(s => s.Atk).Returns(103);
-            species.Setup(s => s.Def).Returns(103);
-            species.Setup(s => s.SpAtk).Returns(135);
-            species.Setup(s => s.SpDef).Returns(135);
-            species.Setup(s => s.Speed).Returns(95);
-
-            return species;
-        }
-
-        private static Mock<IMoveData> CreateMoveMock(int power, MonType type)
-        {
-            Mock<IMoveData> move = new();
-
-            move.Setup(m => m.Power).Returns(power);
-            move.Setup(m => m.Type).Returns(type);
-
-            return move;
-        }
 
         [Test, TestCaseSource(nameof(DamageCases))]
         public void CalculateDamageReturnsExpectedDamage(DamageTestCase testCase)
         {
-            Mock<IRandomProviderService> random = new();
+            Mock<IRandomProvider> random = new();
 
-            random.Setup(r => r.Next(0, 100))
-                .Returns(0);
+            random.Setup(r => r.Next(2))
+                .Returns(1);
 
             random.Setup(r => r.Next(85, 101))
                 .Returns(testCase.RandomRoll);
@@ -138,13 +112,13 @@ namespace SharmonEngine.Battle.Test
                     random.Object);
 
             SpeciesBattleInstance attacker =
-                new(CreateLevel100BulbasaurMock().Object);
+                new(MockCreator.CreateLevel100BulbasaurMock().Object);
 
             SpeciesBattleInstance defender =
-                new(CreateLevel100BulbasaurMock().Object);
+                new(MockCreator.CreateLevel100BulbasaurMock().Object);
 
             IMoveData move =
-                CreateMoveMock(testCase.Power, testCase.Type).Object;
+                MockCreator.CreateMoveMock(testCase.Power, testCase.Type).Object;
 
             DamageCalculationContext context =
                 new(attacker, defender, move);

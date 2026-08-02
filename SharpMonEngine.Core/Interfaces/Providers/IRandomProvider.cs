@@ -1,6 +1,6 @@
-namespace SharpMonEngine.Core.Interfaces.Services
+namespace SharpMonEngine.Core.Interfaces.Providers
 {
-    public interface IRandomProviderService
+    public interface IRandomProvider
     {
         int Next();
         int Next(int maxValue);

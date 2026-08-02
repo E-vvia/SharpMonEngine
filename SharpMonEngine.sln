@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMonEngine.Core", "Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMonEngine.Battle.Core", "SharpMonEngine.Battle.Core\SharpMonEngine.Battle.Core.csproj", "{13C795AB-46C6-4535-B637-9D0DAC3E07B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharmonEngine.Battle.Test", "SharmonEngine.Battle.Test\SharmonEngine.Battle.Test.csproj", "{B142D09F-E781-49F1-813E-377E8382B744}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMonEngine.Battle.Test", "SharpMonEngine.Battle.Test\SharpMonEngine.Battle.Test.csproj", "{B142D09F-E781-49F1-813E-377E8382B744}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
