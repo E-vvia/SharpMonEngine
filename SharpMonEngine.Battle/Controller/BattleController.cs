@@ -19,89 +19,109 @@ namespace SharpMonEngine.Controller
         private readonly IDamageCalculationService _damageCalculationService;
         private readonly IDataProvider _dataProvider;
         private readonly IBattleControllerRequestComparer _requestComparer;
-        private BattleInstance _battleInstance;
 
-        public BattleController(BattleInstance battleInstance,
+        public BattleController(
             IBattleControllerRequestComparer requestComparer,
             IDataProvider dataProvider,
             IDamageCalculationService damageCalculationService)
         {
-            _battleInstance = battleInstance;
             _requestComparer = requestComparer;
             _dataProvider = dataProvider;
             _damageCalculationService = damageCalculationService;
         }
 
-        public BattleControllerResult InitializeBattle()
+        public BattleControllerResult InitializeBattle(BattleInstance battleInstance)
         {
-            BattleControllerResult result = new BattleControllerResult();
-            result.PreviousState = _battleInstance.BattleState;
-            _battleInstance.TurnNumber = 1;
-            _battleInstance.BattleState = BattleState.WaitingInput;
-            result.CurrentState = _battleInstance.BattleState;
+            BattleControllerResult result = new BattleControllerResult
+            {
+                PreviousState = battleInstance.BattleState
+            };
+
+            battleInstance.TurnNumber = 1;
+            battleInstance.BattleState = BattleState.WaitingInput;
+
+            result.CurrentState = battleInstance.BattleState;
+
             return result;
         }
 
-        public BattleControllerResult DoAction(IEnumerable<BattleControllerRequest> battleControllerRequests)
+        public BattleControllerResult DoAction(
+            BattleInstance battleInstance,
+            IEnumerable<BattleControllerRequest> battleControllerRequests)
         {
-            return ResolveActions(battleControllerRequests);
+            return ResolveActions(battleInstance, battleControllerRequests);
         }
 
-        private BattleControllerResult ResolveActions(IEnumerable<BattleControllerRequest> battleControllerRequests)
+        private BattleControllerResult ResolveActions(
+            BattleInstance battleInstance,
+            IEnumerable<BattleControllerRequest> battleControllerRequests)
         {
-            BattleControllerResult result = new BattleControllerResult();
-            result.PreviousState = _battleInstance.BattleState;
-
-            BattleControllerRequest[] arr = battleControllerRequests.ToArray();
-            Array.Sort(arr, _requestComparer.GetComparer(_battleInstance));
-
-            foreach (BattleControllerRequest r in arr)
+            BattleControllerResult result = new BattleControllerResult
             {
-                ResolveAction(result, r);
+                PreviousState = battleInstance.BattleState
+            };
+
+            BattleControllerRequest[] requests = battleControllerRequests.ToArray();
+            Array.Sort(requests, _requestComparer.GetComparer(battleInstance));
+
+            foreach (BattleControllerRequest request in requests)
+            {
+                ResolveAction(battleInstance, result, request);
             }
 
             return result;
         }
 
-        private void ResolveAction(BattleControllerResult result, BattleControllerRequest battleControllerRequest)
+        private void ResolveAction(
+            BattleInstance battleInstance,
+            BattleControllerResult result,
+            BattleControllerRequest battleControllerRequest)
         {
             switch (battleControllerRequest.InputType)
             {
                 case BattleControllerRequestType.Item:
                     break;
+
                 case BattleControllerRequestType.Switch:
                     break;
+
                 case BattleControllerRequestType.Run:
                     break;
+
                 case BattleControllerRequestType.Move:
-                    DoMove(result, battleControllerRequest);
+                    DoMove(battleInstance, result, battleControllerRequest);
                     break;
             }
         }
 
-        private void DoMove(BattleControllerResult result, BattleControllerRequest battleControllerRequest)
+        private void DoMove(
+            BattleInstance battleInstance,
+            BattleControllerResult result,
+            BattleControllerRequest battleControllerRequest)
         {
-            int movementId = battleControllerRequest.Args[0];
+            int moveId = battleControllerRequest.Args[0];
+
             SpeciesBattleInstance attacker =
-                _battleInstance.Combatants[battleControllerRequest.Side, battleControllerRequest.Slot];
+                battleInstance.Combatants[battleControllerRequest.Side, battleControllerRequest.Slot];
 
-            IMoveData usedMove = _dataProvider.GetMoveData(movementId);
+            IMoveData usedMove = _dataProvider.GetMoveData(moveId);
 
-            foreach ((int, int) targetSideSlot in battleControllerRequest.Targets)
+            foreach ((int side, int slot) in battleControllerRequest.Targets)
             {
                 SpeciesBattleInstance defender =
-                    _battleInstance.Combatants[targetSideSlot.Item1, targetSideSlot.Item2];
+                    battleInstance.Combatants[side, slot];
 
-                DamageCalculationContext damageCalculationContext =
+                DamageCalculationContext context =
                     new DamageCalculationContext(attacker, defender, usedMove);
-                int damage = _damageCalculationService.CalculateDamage(damageCalculationContext);
 
-                result.Events.Add(new BattleControllerResultEvent()
+                int damage = _damageCalculationService.CalculateDamage(context);
+
+                result.Events.Add(new BattleControllerResultEvent
                 {
                     EventResultType = BattleControllerResultEvent.EventType.DamageDone,
                     Source = (battleControllerRequest.Side, battleControllerRequest.Slot),
-                    Target = targetSideSlot,
-                    Args = new int[] { damage },
+                    Target = (side, slot),
+                    Args = new[] { damage }
                 });
             }
 

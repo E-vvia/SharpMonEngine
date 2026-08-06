@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using SharpMonEngine.Battle.Core.Interfaces.Modifiers;
 
-namespace SharpMonEngine.Model.Providers
+namespace SharpMonEngine.Battle.Core.Model.Data
 {
-    public class CalculationModifierCollection
+    public class CalculationModifierData
     {
         public Dictionary<int, ICalculationModifier> MoveCalculationModifiers { get; internal set; } =
             new Dictionary<int, ICalculationModifier>();

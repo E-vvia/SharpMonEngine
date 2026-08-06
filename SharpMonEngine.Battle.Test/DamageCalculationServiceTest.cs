@@ -5,7 +5,6 @@ using SharpMonEngine.Battle.Core.Model;
 using SharpMonEngine.Core.Interfaces.Model;
 using SharpMonEngine.Core.Interfaces.Providers;
 using SharpMonEngine.Core.Model;
-using SharpMonEngine.Model.Providers;
 using SharpMonEngine.Providers;
 using SharpMonEngine.Services;
 
@@ -107,8 +106,7 @@ namespace SharmonEngine.Battle.Test
 
             IDamageCalculationService service =
                 new DamageCalculationService(
-                    new CalculationModifierProvider(
-                        new CalculationModifierCollection()),
+                    new CalculationModifierProvider(),
                     random.Object);
 
             SpeciesBattleInstance attacker =
