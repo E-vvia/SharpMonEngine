@@ -10,9 +10,6 @@ using SharpMonEngine.Session;
 
 namespace SharpMonEngine.Battle.Impl
 {
-    /// <summary>
-    /// Entry point for creating SharpMon battles.
-    /// </summary>
     public sealed class SharpMonBattleEngine : IDisposable
     {
         private bool _disposed;

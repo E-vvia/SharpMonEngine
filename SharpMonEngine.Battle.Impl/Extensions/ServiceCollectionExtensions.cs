@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using SharpMonEngine.Actions;
+using SharpMonEngine.Battle.Core.Interfaces.Actions;
 using SharpMonEngine.Battle.Core.Interfaces.Builder;
 using SharpMonEngine.Battle.Core.Interfaces.Providers;
 using SharpMonEngine.Battle.Core.Interfaces.Services;
@@ -19,6 +21,7 @@ namespace SharpMonEngine.Battle.Impl.Extensions
             services.AddSingleton<IDataProvider, DataProvider>();
             services.AddSingleton<ICalculationModifierProvider, CalculationModifierProvider>();
             services.AddScoped<IDamageCalculationService, DamageCalculationService>();
+            services.AddTransient<IActionSorter, DefaultActionSorter>();
             services.AddTransient<IBattleInstanceBuilder, BattleInstanceBuilder>();
             return services;
         }
