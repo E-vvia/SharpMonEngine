@@ -9,8 +9,4 @@
       <ProjectReference Include="..\SharpMonEngine.Core\SharpMonEngine.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Interfaces\Model\" />
-    </ItemGroup>
-
 </Project>

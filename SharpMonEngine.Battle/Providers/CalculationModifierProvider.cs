@@ -10,11 +10,11 @@ namespace SharpMonEngine.Providers
 {
     public class CalculationModifierProvider : ICalculationModifierProvider
     {
-        private CalculationModifierData _calculationModifiers;
+        private readonly CalculationModifierData _calculationModifiers;
 
-        public CalculationModifierProvider()
+        public CalculationModifierProvider(CalculationModifierData calculationModifierData)
         {
-            _calculationModifiers = new CalculationModifierData();
+            _calculationModifiers = calculationModifierData;
         }
 
         public ICalculationModifier GetMoveCalculationModifier(int moveId)

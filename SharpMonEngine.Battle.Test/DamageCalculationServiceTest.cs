@@ -2,6 +2,7 @@ using Moq;
 using SharpMonEngine.Battle.Core.Context.Services;
 using SharpMonEngine.Battle.Core.Interfaces.Services;
 using SharpMonEngine.Battle.Core.Model;
+using SharpMonEngine.Battle.Core.Model.Data;
 using SharpMonEngine.Core.Interfaces.Model;
 using SharpMonEngine.Core.Interfaces.Providers;
 using SharpMonEngine.Core.Model;
@@ -104,9 +105,10 @@ namespace SharmonEngine.Battle.Test
             random.Setup(r => r.Next(85, 101))
                 .Returns(testCase.RandomRoll);
 
+            CalculationModifierData calculationModifierData = new CalculationModifierData();
             IDamageCalculationService service =
                 new DamageCalculationService(
-                    new CalculationModifierProvider(),
+                    new CalculationModifierProvider(calculationModifierData),
                     random.Object);
 
             SpeciesBattleInstance attacker =
