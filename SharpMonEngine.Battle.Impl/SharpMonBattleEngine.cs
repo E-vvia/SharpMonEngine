@@ -17,7 +17,7 @@ namespace SharpMonEngine.Battle.Impl
 
         public SharpMonBattleEngine()
         {
-            var services = new ServiceCollection();
+            ServiceCollection services = new ServiceCollection();
 
             services.AddBattleSystem("data");
 

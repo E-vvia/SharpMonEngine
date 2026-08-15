@@ -19,7 +19,7 @@ namespace SharpMonEngine.Battle.Impl.Extensions
         {
             services.AddSingleton<IRandomProvider, RandomProvider>();
             services.AddSingleton<IDataProvider, DataProvider>();
-            services.AddSingleton<ICalculationModifierProvider, CalculationModifierProvider>();
+            services.AddSingleton<ICalculationModifierProvider, CalculationModifierProvider>((s)=> new CalculationModifierProvider(new CalculationModifierData()));
             services.AddScoped<IDamageCalculationService, DamageCalculationService>();
             services.AddTransient<IActionSorter, DefaultActionSorter>();
             services.AddTransient<IBattleInstanceBuilder, BattleInstanceBuilder>();
