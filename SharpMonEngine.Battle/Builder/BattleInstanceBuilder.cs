@@ -42,11 +42,11 @@ namespace SharpMonEngine.Builder
 
             Battle.SlotsPerSideNumber = slotsPerSide;
 
-            foreach (var side in Battle.Sides)
+            foreach (Side side in Battle.Sides)
             {
                 side.Slots = new Slot[slotsPerSide];
 
-                for (var slotId = 0; slotId < slotsPerSide; slotId++)
+                for (int slotId = 0; slotId < slotsPerSide; slotId++)
                 {
                     side.Slots[slotId] = new Slot
                     {
@@ -63,10 +63,10 @@ namespace SharpMonEngine.Builder
         {
             ValidateSideIndex(side);
 
-            if (availablePokemon < 0)
+            if (availablePokemon < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(availablePokemon),
-                    "Available Pokémon cannot be negative.");
+                    "Available Pokémon must be at least 1.");
             }
 
             Battle.Sides[side].AvailablePokemonNumber = availablePokemon;
@@ -111,7 +111,7 @@ namespace SharpMonEngine.Builder
                 throw new InvalidOperationException("The number of sides does not match the sides collection.");
             }
 
-            foreach (var side in Battle.Sides)
+            foreach (Side side in Battle.Sides)
             {
                 if (side == null)
                 {

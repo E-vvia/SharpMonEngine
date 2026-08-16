@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="dotnet run --file &quot;$(MSBuildProjectDirectory)/../BuildTools/Symlink.cs&quot; -- &quot;$(TargetPath)&quot; &quot;$(SolutionDir)SharpMonEngine.Unity/Assets/SharpMonEngine/$(MSBuildProjectName)/$(MSBuildProjectName).dll&quot;"/>
+        <Exec Command="dotnet run --file &quot;$(MSBuildProjectDirectory)/../BuildTools/Symlink.cs&quot; -- &quot;$(TargetPath)&quot; &quot;$(MSBuildProjectDirectory)/../SharpMonEngine.Unity/Assets/SharpMonEngine/$(MSBuildProjectName)/$(MSBuildProjectName).dll&quot;"/>
     </Target>
 
 </Project>
