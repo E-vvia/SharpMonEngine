@@ -1,3 +1,4 @@
+using SharpMonEngine.Unity.Extensions;
 using SharpMonEngine.Unity.Model;
 using UnityEditor;
 using UnityEngine;
@@ -24,44 +25,59 @@ namespace SharpMonEngine.Unity.CustomEditors
 
             EditorGUILayout.LabelField("Forms", EditorStyles.boldLabel);
 
+            DrawForms();
+
+            EditorGUILayout.Space();
+
+            AddForm();
+
+            serializedObject.ApplyModifiedProperties();
+        }
+
+        private void DrawForms()
+        {
             for (int i = 0; i < _forms!.arraySize; i++)
             {
                 SerializedProperty form = _forms.GetArrayElementAtIndex(i);
 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-                EditorGUILayout.LabelField($"Form {i + 1}", EditorStyles.boldLabel
-                );
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField($"Form {i + 1}", EditorStyles.boldLabel);
+
+                GUILayout.FlexibleSpace();
+
+                EditorGUILayout.EndHorizontal();
+
+                if (DeleteForm(i))
+                {
+                    continue;
+                }
 
                 DrawForm(form);
 
                 EditorGUILayout.EndVertical();
             }
+        }
 
-            EditorGUILayout.Space();
-
-            if (GUILayout.Button("Add Form"))
+        private bool DeleteForm(int index)
+        {
+            if (!GUILayout.Button("Delete", GUILayout.Width(60)))
             {
-                int index = _forms.arraySize;
-                _forms.InsertArrayElementAtIndex(index);
-                SerializedProperty form = _forms.GetArrayElementAtIndex(index);
-
-                form.FindPropertyRelative("Id").intValue = 0;
-                form.FindPropertyRelative("Name").stringValue = "SpeciesForm";
-                form.FindPropertyRelative("Type1").enumValueIndex = 0;
-                form.FindPropertyRelative("Type2").enumValueIndex = 0;
-                form.FindPropertyRelative("Height").floatValue = 0f;
-                form.FindPropertyRelative("Weight").floatValue = 0f;
-
-                SerializedProperty stats = form.FindPropertyRelative("stats");
-                if (stats.arraySize != (int)Stats.Count)
-                    stats.arraySize = (int)Stats.Count;
-
-                for (int i = 0; i < stats.arraySize; i++)
-                    stats.GetArrayElementAtIndex(i).intValue = 0;
+                return false;
             }
 
-            serializedObject.ApplyModifiedProperties();
+            if (!EditorUtility.DisplayDialog(
+                    "Delete Form",
+                    $"Are you sure you want to delete Form {index + 1}?",
+                    "Delete",
+                    "Cancel"))
+            {
+                return false;
+            }
+
+            _forms!.DeleteArrayElementAtIndex(index);
+            return true;
         }
 
         private static void DrawForm(SerializedProperty form)
@@ -72,24 +88,50 @@ namespace SharpMonEngine.Unity.CustomEditors
 
             EditorGUILayout.LabelField("Base Stats", EditorStyles.boldLabel);
 
-            SerializedProperty stats = form.FindPropertyRelative("stats");
+            SerializedProperty stats = form.FindPropertyRelativeBacking("stats");
 
             for (int i = 0; i < (int)Stats.Count; i++)
             {
                 EditorGUILayout.PropertyField(stats.GetArrayElementAtIndex(i), new GUIContent(GetStatName((Stats)i)));
             }
 
-            EditorGUILayout.PropertyField(form.FindPropertyRelative("Height"));
+            EditorGUILayout.PropertyField(form.FindPropertyRelativeBacking("Height"));
 
-            EditorGUILayout.PropertyField(form.FindPropertyRelative("Weight"));
+            EditorGUILayout.PropertyField(form.FindPropertyRelativeBacking("Weight"));
+        }
+
+        private void AddForm()
+        {
+            if (!GUILayout.Button("Add Form"))
+            {
+                return;
+            }
+
+            int index = _forms!.arraySize;
+            _forms.InsertArrayElementAtIndex(index);
+            SerializedProperty form = _forms.GetArrayElementAtIndex(index);
+
+            form.FindPropertyRelativeBacking("Id").intValue = 0;
+            form.FindPropertyRelativeBacking("Name").stringValue = "SpeciesForm";
+            form.FindPropertyRelativeBacking("Type1").enumValueIndex = 0;
+            form.FindPropertyRelativeBacking("Type2").enumValueIndex = 0;
+            form.FindPropertyRelativeBacking("Height").floatValue = 0f;
+            form.FindPropertyRelativeBacking("Weight").floatValue = 0f;
+
+            SerializedProperty stats = form.FindPropertyRelativeBacking("stats");
+            if (stats.arraySize != (int)Stats.Count)
+                stats.arraySize = (int)Stats.Count;
+
+            for (int i = 0; i < stats.arraySize; i++)
+                stats.GetArrayElementAtIndex(i).intValue = 0;
         }
 
         private static void DrawProperties(SerializedProperty parent, params string[] names)
         {
             foreach (string name in names)
             {
-                SerializedProperty property = parent.FindPropertyRelative(name);
-                EditorGUILayout.PropertyField(parent.FindPropertyRelative(name));
+                SerializedProperty property = parent.FindPropertyRelativeBacking(name);
+                EditorGUILayout.PropertyField(parent.FindPropertyRelativeBacking(name));
             }
         }
 
