@@ -43,10 +43,22 @@ namespace SharpMonEngine.Unity.CustomEditors
             if (GUILayout.Button("Add Form"))
             {
                 int index = _forms.arraySize;
-
                 _forms.InsertArrayElementAtIndex(index);
-
                 SerializedProperty form = _forms.GetArrayElementAtIndex(index);
+
+                form.FindPropertyRelative("Id").intValue = 0;
+                form.FindPropertyRelative("Name").stringValue = "SpeciesForm";
+                form.FindPropertyRelative("Type1").enumValueIndex = 0;
+                form.FindPropertyRelative("Type2").enumValueIndex = 0;
+                form.FindPropertyRelative("Height").floatValue = 0f;
+                form.FindPropertyRelative("Weight").floatValue = 0f;
+
+                SerializedProperty stats = form.FindPropertyRelative("stats");
+                if (stats.arraySize != (int)Stats.Count)
+                    stats.arraySize = (int)Stats.Count;
+
+                for (int i = 0; i < stats.arraySize; i++)
+                    stats.GetArrayElementAtIndex(i).intValue = 0;
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -72,18 +84,11 @@ namespace SharpMonEngine.Unity.CustomEditors
             EditorGUILayout.PropertyField(form.FindPropertyRelative("Weight"));
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
         private static void DrawProperties(SerializedProperty parent, params string[] names)
         {
-            foreach (var name in names)
+            foreach (string name in names)
             {
-                var property = parent.FindPropertyRelative(name);
-                if (property == null)
-                {
-                    Debug.LogError($"Could not find '{name}' on '{parent.propertyPath}'");
-                    continue;
-                }
-
+                SerializedProperty property = parent.FindPropertyRelative(name);
                 EditorGUILayout.PropertyField(parent.FindPropertyRelative(name));
             }
         }
