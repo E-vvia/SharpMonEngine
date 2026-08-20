@@ -5,6 +5,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DefineConstants>TRACE; UNITY_EDITOR</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <None Remove="Assets\**"/>
         <None Remove="Library\**"/>
@@ -28,6 +32,57 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Reference Include="Unity.2D.Animation.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Animation.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Animation.Runtime">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Animation.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Aseprite.Common">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Aseprite.Common.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Aseprite.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Aseprite.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Common.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Common.Path.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Path.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Common.Runtime">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.IK.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.IK.Runtime">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.IK.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Psdimporter.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Psdimporter.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Sprite.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.SpriteShape.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.SpriteShape.Runtime">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Tilemap.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Tilemap.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Tilemap.Extras">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Tilemap.Extras.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Tilemap.Extras.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.2D.Tooling.Editor">
+            <HintPath>Library\ScriptAssemblies\Unity.2D.Tooling.Editor.dll</HintPath>
+        </Reference>
         <Reference Include="Unity.Cecil">
             <HintPath>..\ExternalLib\UnityEngine\Unity.Cecil.dll</HintPath>
         </Reference>
@@ -36,6 +91,9 @@
         </Reference>
         <Reference Include="Unity.Cecil.Pdb">
             <HintPath>..\ExternalLib\UnityEngine\Unity.Cecil.Pdb.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.InputSystem">
+            <HintPath>Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
         </Reference>
         <Reference Include="UnityEditor">
             <HintPath>..\ExternalLib\UnityEngine\UnityEditor.dll</HintPath>
@@ -449,6 +507,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SharpMonEngine.Core\SharpMonEngine.Core.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Exceptions\Controllers\"/>
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

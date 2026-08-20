@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using SharpMonEngine.Unity.Extensions;
 using SharpMonEngine.Unity.Model;
 using UnityEditor;
@@ -150,3 +151,4 @@ namespace SharpMonEngine.Unity.CustomEditors
         }
     }
 }
+#endif
