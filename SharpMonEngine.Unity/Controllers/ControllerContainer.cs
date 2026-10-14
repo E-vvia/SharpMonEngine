@@ -11,37 +11,44 @@ namespace SharpMonEngine.Unity.Controllers
         {
             Type controllerType = typeof(TType);
 
-            if (Controllers.ContainsKey(controllerType))
+            if (!Controllers.TryAdd(controllerType, controller))
             {
                 throw new InvalidOperationException(
                     $"The controller type '{controllerType.Name}' has already been registered.");
             }
-
-            Controllers.Add(controllerType, controller);
         }
 
         public static TType Get<TType>()
         {
             Type controllerType = typeof(TType);
 
-            if (!Controllers.TryGetValue(controllerType, out object controller))
+            if (!Controllers.TryGetValue(controllerType, out object controller) && controller != null)
             {
-                throw new InvalidOperationException(
-                    $"The controller type '{controllerType.Name}' has not been registered.");
+                ThrowNotRegisteredException(controllerType);
             }
 
-            return (TType)controller;
+            return (TType)controller!;
         }
 
         public static void UnRegister<TType>()
         {
             Type controllerType = typeof(TType);
-            if (!Controllers.TryGetValue(controllerType, out object controller))
+            if (!Controllers.Remove(controllerType, out object controller))
             {
-                return;
+                ThrowNotRegisteredException(controllerType);
             }
+        }
 
-            Controllers.Remove(controllerType);
+        private static void ThrowAlreadyRegisteredException(Type controllerType)
+        {
+            throw new InvalidOperationException(
+                $"The controller type '{controllerType.Name}' has already been registered.");
+        }
+
+        private static void ThrowNotRegisteredException(Type controllerType)
+        {
+            throw new InvalidOperationException(
+                $"The controller type '{controllerType.Name}' has not been registered.");
         }
     }
 }

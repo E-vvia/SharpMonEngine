@@ -1,36 +1,37 @@
 using SharpMonEngine.Unity.Controllers;
 using SharpMonEngine.Unity.Interfaces.Controllers;
+using SharpMonEngine.Unity.Interfaces.Sprites;
 using UnityEngine;
 
 namespace SharpMonEngine.Unity.Player
 {
-    public class PlayerMovement : MonoBehaviour
+    public class PlayerMovement : MonoBehaviour, IOverworldCharacterAnimatable
     {
         [SerializeField] private float runningMultiplier = 2f;
         [SerializeField] private float baseSpeed = 5;
-        private Vector2 _direction = Vector2.down;
-        private float _lerp = 0;
-        private IMapController? _mapController;
-        private Vector2? _originalPosition;
-        private IPlayerController? _playerController;
-        private float _speed = 0;
-        private Vector2? _targetPosition;
 
         public void Start()
         {
             _playerController = ControllerContainer.Get<IPlayerController>();
             _mapController = ControllerContainer.Get<IMapController>();
-            _playerController.OnMove += OnPlayerMove;
-            _playerController.OnRun += OnPlayerRun;
             _speed = baseSpeed;
             transform.position = GetPlayerWorldPosition();
         }
 
-        void Update()
+        public void Update()
         {
+            SetTargetPosition();
             MoveToTargetPosition();
-            _speed = baseSpeed;
+
+            if (_targetPosition == null)
+            {
+                ResetSpeed();
+            }
         }
+
+        public Vector2 Direction { get; private set; } = Vector2.down;
+
+        public bool Running => !Mathf.Approximately(_speed, baseSpeed);
 
         private void OnPlayerRun()
         {
@@ -45,7 +46,7 @@ namespace SharpMonEngine.Unity.Player
             }
 
             //We wanna interpolate betwen Point A (origin cell) to Point B (destination cell)
-            //We do it by _lerp * because:
+            //We do it by _lerp * _speed because:
             //1. It doesn't slow down when reaching Point B.
             //2. We can make it faster or slower.
             float t = _lerp * _speed;
@@ -64,38 +65,78 @@ namespace SharpMonEngine.Unity.Player
             }
         }
 
-        private void OnPlayerMove(Vector2 movement)
+        private void SetTargetPosition()
         {
-            if (_targetPosition != null || _originalPosition != null || movement == Vector2.zero)
+            Vector2 movement = _playerController!.Move.ReadValue<Vector2>();
+            bool movementPressed = _playerController.Move.WasPressedThisFrame();
+
+            if (movement == Vector2.zero || _targetPosition.HasValue)
             {
                 return;
             }
 
             if (movement.x > 0)
             {
-                _direction = Vector2.right;
+                Direction = Vector2.right;
             }
-            else if (movement.x < 0)
+
+            if (movement.x < 0)
             {
-                _direction = Vector2.left;
+                Direction = Vector2.left;
             }
-            else if (movement.y > 0)
+
+            if (movement.y > 0)
             {
-                _direction = Vector2.up;
+                Direction = Vector2.up;
             }
-            else if (movement.y < 0)
+
+            if (movement.y < 0)
             {
-                _direction = Vector2.down;
+                Direction = Vector2.down;
             }
 
             Vector3 playerPosition = GetPlayerWorldPosition();
-            _originalPosition = playerPosition;
-            _targetPosition = _originalPosition + _direction;
+
+            // ReSharper disable once InvertIf
+            // Kept not inverted for clarity
+            if (!movementPressed)
+            {
+                _originalPosition = playerPosition;
+                _targetPosition = _originalPosition + Direction;
+            }
         }
 
         private Vector3 GetPlayerWorldPosition()
         {
             return _mapController?.GetGridPosition(transform.position) ?? transform.position;
         }
+
+        private void ResetSpeed()
+        {
+            _speed = baseSpeed;
+        }
+
+        #region Controllers
+
+        private IMapController? _mapController;
+        private IPlayerController? _playerController;
+
+        #endregion
+
+        #region PositionalVectors
+
+        private Vector2? _originalPosition;
+        private Vector2? _targetPosition;
+
+        #endregion
+
+        #region Lerp and speed variables
+
+        private float _lerp;
+        private float _speed;
+
+        private bool _movementPressed = false;
+
+        #endregion
     }
 }

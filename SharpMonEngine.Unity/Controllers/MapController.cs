@@ -1,4 +1,3 @@
-using SharpMonEngine.Unity.Attributes;
 using SharpMonEngine.Unity.Interfaces.Controllers;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -6,12 +5,11 @@ using UnityEngine.Tilemaps;
 namespace SharpMonEngine.Unity.Controllers
 {
     [RequireComponent(typeof(Grid))]
-    [RequireComponent(typeof(Tilemap))]
     [RequireComponent(typeof(TilemapRenderer))]
     [DefaultExecutionOrder(-99)]
     public class MapController : MonoBehaviour, IMapController
     {
-        [SerializeField] [ReadOnly] private Grid _grid = null!;
+        [SerializeField] private Grid _grid = null!;
 
         public void Awake()
         {

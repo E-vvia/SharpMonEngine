@@ -1,13 +1,12 @@
-using System;
-using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace SharpMonEngine.Unity.Interfaces.Controllers
 {
     public interface IPlayerController
     {
-        event Action<Vector2>? OnMove;
-        event Action? OnConfirmPressed;
-        event Action? OnCancelPressed;
-        event Action? OnRun;
+        InputAction Cancel { get; }
+        InputAction Confirm { get; }
+        InputAction Move { get; }
+        InputAction Run { get; }
     }
 }

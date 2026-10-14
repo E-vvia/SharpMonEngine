@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="UnityEditor">
+            <HintPath>..\ExternalLibs\UnityEditor.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>..\ExternalLibs\UnityEngine.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="dotnet run --file &quot;$(MSBuildProjectDirectory)/../BuildTools/Symlink.cs&quot; -- &quot;$(TargetPath)&quot; &quot;$(MSBuildProjectDirectory)/../SharpMonEngine.Unity/Assets/SharpMonEngine/$(MSBuildProjectName)/$(MSBuildProjectName).dll&quot;&#xA;&#xA;dotnet run --file &quot;$(MSBuildProjectDirectory)/../BuildTools/Symlink.cs&quot; -- &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(MSBuildProjectDirectory)/../SharpMonEngine.Unity/Assets/SharpMonEngine/$(MSBuildProjectName)/$(MSBuildProjectName).pdb&quot;"/>
+    </Target>
+
+</Project>

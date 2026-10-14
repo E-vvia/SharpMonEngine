@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMonEngine.Battle.Impl"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMonEngine.Unity", "SharpMonEngine.Unity\SharpMonEngine.Unity.csproj", "{E658E23B-172E-42CA-BF25-7D73BEB059F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMonEngine.Unity.Editor", "SharpMonEngine.Unity.Editor\SharpMonEngine.Unity.Editor.csproj", "{F58DC319-9CA1-4443-98B5-6C23DDADD252}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{E658E23B-172E-42CA-BF25-7D73BEB059F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E658E23B-172E-42CA-BF25-7D73BEB059F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E658E23B-172E-42CA-BF25-7D73BEB059F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F58DC319-9CA1-4443-98B5-6C23DDADD252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F58DC319-9CA1-4443-98B5-6C23DDADD252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F58DC319-9CA1-4443-98B5-6C23DDADD252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F58DC319-9CA1-4443-98B5-6C23DDADD252}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
