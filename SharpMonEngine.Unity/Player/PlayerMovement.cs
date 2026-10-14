@@ -1,3 +1,4 @@
+using System;
 using SharpMonEngine.Unity.Controllers;
 using SharpMonEngine.Unity.Interfaces.Controllers;
 using SharpMonEngine.Unity.Interfaces.Sprites;
@@ -7,170 +8,116 @@ namespace SharpMonEngine.Unity.Player
 {
     public class PlayerMovement : MonoBehaviour, IOverworldCharacterAnimatable
     {
-        [SerializeField] private float walkThreshold = 0.05f;
-        [SerializeField] private float runningMultiplier = 1.5f;
-        [SerializeField] private float baseSpeed = 2f;
+        [Header("Movement")] [SerializeField] private float walkSpeed = 4f;
+        [SerializeField] private float runSpeed = 6f;
+        [SerializeField] private float inputThreshold = 0.05f;
+        private bool _currentStepIsRunning;
+        private float _inputHoldTime;
 
-        private float _lerp;
         private IMapController? _mapController;
-
-        private Vector2? _originalPosition;
         private IPlayerController? _playerController;
-        private float _speed;
-        private Vector2? _targetPosition;
 
-        private float _timeToWalk = 0;
+        private Vector2 _startPosition;
+        private float _stepProgress;
+        private Vector2 _targetPosition;
 
-        public void Start()
+        private float CurrentSpeed => _currentStepIsRunning ? runSpeed : walkSpeed;
+
+        private void Start()
         {
             _playerController = ControllerContainer.Get<IPlayerController>();
             _mapController = ControllerContainer.Get<IMapController>();
-            _speed = baseSpeed;
-            transform.position = GetPlayerWorldPosition();
+
+            transform.position = GetGridWorldPosition();
         }
 
-        public void Update()
+        private void Update()
         {
-            if (IsMovementPressed())
-            {
-                SetDirection();
-                IncreateTimeToWalk();
+            if (_playerController == null || _mapController == null)
+                return;
 
-                if (ShouldMove())
-                {
-                    if (IsRunning() && !_targetPosition.HasValue)
-                    {
-                        OnPlayerRun();
-                    }
-
-                    SetTargetPosition();
-                }
-            }
-            else
-            {
-                ResetTimeToWalk();
-            }
-
-            MoveToTargetPosition();
-
-            if (!_targetPosition.HasValue && !IsRunning())
-            {
-                ResetSpeed();
-            }
+            UpdateMovement();
         }
 
         public Vector2 Direction { get; private set; } = Vector2.down;
+        public Action? OnStepCompleted { get; set; }
 
-        public bool Running => !Mathf.Approximately(_speed, baseSpeed);
+        public float MoveProgress => IsMoving ? _stepProgress : 0f;
+        public bool IsMoving { get; private set; }
 
-        private bool IsMovementPressed()
+        public bool IsRunning => IsMoving
+            ? _currentStepIsRunning
+            : _playerController?.Run.IsPressed() == true;
+
+        private void UpdateMovement()
         {
-            return _playerController!.Move.IsPressed();
-        }
+            bool movementPressed = _playerController!.Move.IsPressed();
 
-        private void IncreateTimeToWalk()
-        {
-            _timeToWalk += Time.deltaTime;
-            if (_timeToWalk > 1)
+            if (!movementPressed)
+                _inputHoldTime = 0f;
+            else
+                _inputHoldTime += Time.deltaTime;
+
+            if (IsMoving)
             {
-                _timeToWalk = 1;
-            }
-        }
-
-        private bool ShouldMove()
-        {
-            return _timeToWalk > walkThreshold;
-        }
-
-        private bool IsRunning()
-        {
-            return _playerController!.Run.IsPressed();
-        }
-
-        private void OnPlayerRun()
-        {
-            _speed = baseSpeed * runningMultiplier;
-        }
-
-        private void MoveToTargetPosition()
-        {
-            if (!_targetPosition.HasValue || !_originalPosition.HasValue)
-            {
+                MoveToTarget();
                 return;
             }
 
-            _lerp += Time.deltaTime * _speed;
-
-            float t = Mathf.Clamp01(_lerp);
-
-            transform.position = Vector2.Lerp(_originalPosition.Value, _targetPosition.Value, t);
-
-            // ReSharper disable once InvertIf
-            // Kept not inverted for clarity
-            if (t >= 1f)
-            {
-                transform.position = GetPlayerWorldPosition();
-                _targetPosition = null;
-                _originalPosition = null;
-                _lerp = 0;
-            }
-        }
-
-        private void SetDirection()
-        {
-            Vector2 movement = _playerController!.Move.ReadValue<Vector2>();
-
-            if (movement == Vector2.zero)
-            {
+            if (!movementPressed || _inputHoldTime < inputThreshold)
                 return;
-            }
 
-            if (movement.x > 0)
-            {
-                Direction = Vector2.right;
-            }
+            Vector2 input = _playerController.Move.ReadValue<Vector2>();
 
-            if (movement.x < 0)
-            {
-                Direction = Vector2.left;
-            }
-
-            if (movement.y > 0)
-            {
-                Direction = Vector2.up;
-            }
-
-            if (movement.y < 0)
-            {
-                Direction = Vector2.down;
-            }
-        }
-
-        private void SetTargetPosition()
-        {
-            if (_targetPosition.HasValue)
-            {
+            if (input == Vector2.zero)
                 return;
-            }
 
-            Vector3 playerPosition = GetPlayerWorldPosition();
-            _originalPosition = playerPosition;
-            _targetPosition = _originalPosition + Direction;
+            Direction = GetCardinalDirection(input);
+
+            _currentStepIsRunning = _playerController.Run.IsPressed();
+            StartStep();
         }
 
-        private void ResetTimeToWalk()
+        private void StartStep()
         {
-            _timeToWalk = 0;
+            _startPosition = GetGridWorldPosition();
+            _targetPosition = _startPosition + Direction;
+            _stepProgress = 0f;
+            IsMoving = true;
         }
 
-        private Vector3 GetPlayerWorldPosition()
+        private void MoveToTarget()
         {
-            return _mapController?.GetGridPosition(transform.position) ?? transform.position;
+            _stepProgress += CurrentSpeed * Time.deltaTime;
+
+            float progress = Mathf.Clamp01(_stepProgress);
+
+            transform.position = Vector2.Lerp(
+                _startPosition,
+                _targetPosition,
+                progress);
+
+            if (progress < 1f)
+                return;
+
+            transform.position = _targetPosition;
+            IsMoving = false;
+            _stepProgress = 0f;
+
+            OnStepCompleted?.Invoke();
         }
 
-        private void ResetSpeed()
+        private static Vector2 GetCardinalDirection(Vector2 input)
         {
-            _speed = baseSpeed;
+            if (Mathf.Abs(input.x) > Mathf.Abs(input.y))
+                return input.x > 0 ? Vector2.right : Vector2.left;
+
+            return input.y > 0 ? Vector2.up : Vector2.down;
+        }
+
+        private Vector2 GetGridWorldPosition()
+        {
+            return _mapController!.GetGridPosition(transform.position);
         }
     }
 }
