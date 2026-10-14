@@ -43,8 +43,14 @@
         <Reference Include="Unity.InputSystem">
             <HintPath>Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
         </Reference>
-        <Reference Include="UnityEngine">
-            <HintPath>..\ExternalLibs\UnityEngine.dll</HintPath>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>..\ExternalLibs\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.GridModule">
+            <HintPath>..\ExternalLibs\UnityEngine\UnityEngine.GridModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TilemapModule">
+            <HintPath>..\ExternalLibs\UnityEngine\UnityEngine.TilemapModule.dll</HintPath>
         </Reference>
     </ItemGroup>
 

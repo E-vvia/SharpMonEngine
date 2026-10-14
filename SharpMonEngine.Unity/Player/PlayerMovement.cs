@@ -7,8 +7,19 @@ namespace SharpMonEngine.Unity.Player
 {
     public class PlayerMovement : MonoBehaviour, IOverworldCharacterAnimatable
     {
-        [SerializeField] private float runningMultiplier = 2f;
-        [SerializeField] private float baseSpeed = 5;
+        [SerializeField] private float walkThreshold = 0.05f;
+        [SerializeField] private float runningMultiplier = 1.5f;
+        [SerializeField] private float baseSpeed = 2f;
+
+        private float _lerp;
+        private IMapController? _mapController;
+
+        private Vector2? _originalPosition;
+        private IPlayerController? _playerController;
+        private float _speed;
+        private Vector2? _targetPosition;
+
+        private float _timeToWalk = 0;
 
         public void Start()
         {
@@ -20,10 +31,29 @@ namespace SharpMonEngine.Unity.Player
 
         public void Update()
         {
-            SetTargetPosition();
+            if (IsMovementPressed())
+            {
+                SetDirection();
+                IncreateTimeToWalk();
+
+                if (ShouldMove())
+                {
+                    if (IsRunning() && !_targetPosition.HasValue)
+                    {
+                        OnPlayerRun();
+                    }
+
+                    SetTargetPosition();
+                }
+            }
+            else
+            {
+                ResetTimeToWalk();
+            }
+
             MoveToTargetPosition();
 
-            if (_targetPosition == null)
+            if (!_targetPosition.HasValue && !IsRunning())
             {
                 ResetSpeed();
             }
@@ -32,6 +62,30 @@ namespace SharpMonEngine.Unity.Player
         public Vector2 Direction { get; private set; } = Vector2.down;
 
         public bool Running => !Mathf.Approximately(_speed, baseSpeed);
+
+        private bool IsMovementPressed()
+        {
+            return _playerController!.Move.IsPressed();
+        }
+
+        private void IncreateTimeToWalk()
+        {
+            _timeToWalk += Time.deltaTime;
+            if (_timeToWalk > 1)
+            {
+                _timeToWalk = 1;
+            }
+        }
+
+        private bool ShouldMove()
+        {
+            return _timeToWalk > walkThreshold;
+        }
+
+        private bool IsRunning()
+        {
+            return _playerController!.Run.IsPressed();
+        }
 
         private void OnPlayerRun()
         {
@@ -45,18 +99,15 @@ namespace SharpMonEngine.Unity.Player
                 return;
             }
 
-            //We wanna interpolate betwen Point A (origin cell) to Point B (destination cell)
-            //We do it by _lerp * _speed because:
-            //1. It doesn't slow down when reaching Point B.
-            //2. We can make it faster or slower.
-            float t = _lerp * _speed;
-            transform.position = Vector2.Lerp(_originalPosition.Value, _targetPosition.Value, t);
+            _lerp += Time.deltaTime * _speed;
 
-            _lerp += Time.deltaTime;
+            float t = Mathf.Clamp01(_lerp);
+
+            transform.position = Vector2.Lerp(_originalPosition.Value, _targetPosition.Value, t);
 
             // ReSharper disable once InvertIf
             // Kept not inverted for clarity
-            if (Vector2.Distance(transform.position, _targetPosition.Value) < 0.01f)
+            if (t >= 1f)
             {
                 transform.position = GetPlayerWorldPosition();
                 _targetPosition = null;
@@ -65,12 +116,11 @@ namespace SharpMonEngine.Unity.Player
             }
         }
 
-        private void SetTargetPosition()
+        private void SetDirection()
         {
             Vector2 movement = _playerController!.Move.ReadValue<Vector2>();
-            bool movementPressed = _playerController.Move.WasPressedThisFrame();
 
-            if (movement == Vector2.zero || _targetPosition.HasValue)
+            if (movement == Vector2.zero)
             {
                 return;
             }
@@ -94,16 +144,23 @@ namespace SharpMonEngine.Unity.Player
             {
                 Direction = Vector2.down;
             }
+        }
+
+        private void SetTargetPosition()
+        {
+            if (_targetPosition.HasValue)
+            {
+                return;
+            }
 
             Vector3 playerPosition = GetPlayerWorldPosition();
+            _originalPosition = playerPosition;
+            _targetPosition = _originalPosition + Direction;
+        }
 
-            // ReSharper disable once InvertIf
-            // Kept not inverted for clarity
-            if (!movementPressed)
-            {
-                _originalPosition = playerPosition;
-                _targetPosition = _originalPosition + Direction;
-            }
+        private void ResetTimeToWalk()
+        {
+            _timeToWalk = 0;
         }
 
         private Vector3 GetPlayerWorldPosition()
@@ -115,28 +172,5 @@ namespace SharpMonEngine.Unity.Player
         {
             _speed = baseSpeed;
         }
-
-        #region Controllers
-
-        private IMapController? _mapController;
-        private IPlayerController? _playerController;
-
-        #endregion
-
-        #region PositionalVectors
-
-        private Vector2? _originalPosition;
-        private Vector2? _targetPosition;
-
-        #endregion
-
-        #region Lerp and speed variables
-
-        private float _lerp;
-        private float _speed;
-
-        private bool _movementPressed = false;
-
-        #endregion
     }
 }

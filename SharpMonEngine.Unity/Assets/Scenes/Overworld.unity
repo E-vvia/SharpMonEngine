@@ -310,8 +310,9 @@ MonoBehaviour:
   m_Script: {fileID: 306784825, guid: 45d942d87d3a5e01fbd366e78f61817c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SharpMonEngine.Unity.dll::SharpMonEngine.Unity.Player.PlayerMovement
-  runningMultiplier: 0
-  baseSpeed: 2
+  walkThreshold: 0.1
+  runningMultiplier: 2
+  baseSpeed: 2.5
 --- !u!212 &951062537
 SpriteRenderer:
   serializedVersion: 2
