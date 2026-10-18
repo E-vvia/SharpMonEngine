@@ -196,7 +196,7 @@ Transform:
   - {fileID: 1451618274}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &951062535
+--- !u!1 &634529916
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,40 +204,84 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 951062538}
-  - component: {fileID: 951062537}
-  - component: {fileID: 951062536}
-  - component: {fileID: 951062539}
+  - component: {fileID: 634529917}
+  - component: {fileID: 634529919}
+  - component: {fileID: 634529918}
   m_Layer: 0
-  m_Name: Player
-  m_TagString: Player
+  m_Name: Sprite
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &951062536
+--- !u!4 &634529917
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634529916}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 951062538}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &634529918
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 951062535}
+  m_GameObject: {fileID: 634529916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 306784825, guid: 45d942d87d3a5e01fbd366e78f61817c, type: 3}
+  m_Script: {fileID: 650290709, guid: 45d942d87d3a5e01fbd366e78f61817c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: SharpMonEngine.Unity.dll::SharpMonEngine.Unity.Player.PlayerMovement
-  walkSpeed: 4
-  runSpeed: 6
-  inputThreshold: 0.05
---- !u!212 &951062537
+  m_EditorClassIdentifier: SharpMonEngine.Unity.dll::SharpMonEngine.Unity.Sprites.OverworldCharacterAnimator
+  <UpAnimations>k__BackingField:
+    <Direction>k__BackingField: {x: 0, y: 0}
+    <WalkRightStep>k__BackingField: {fileID: 0}
+    <WalkLeftStep>k__BackingField: {fileID: 0}
+    <RunRightStep>k__BackingField: {fileID: 0}
+    <RunLeftStep>k__BackingField: {fileID: 0}
+    <RunIdle>k__BackingField: {fileID: 0}
+    <Idle>k__BackingField: {fileID: 0}
+  <DownAnimations>k__BackingField:
+    <Direction>k__BackingField: {x: 0, y: 0}
+    <WalkRightStep>k__BackingField: {fileID: 0}
+    <WalkLeftStep>k__BackingField: {fileID: 0}
+    <RunRightStep>k__BackingField: {fileID: 0}
+    <RunLeftStep>k__BackingField: {fileID: 0}
+    <RunIdle>k__BackingField: {fileID: 0}
+    <Idle>k__BackingField: {fileID: 0}
+  <RightAnimations>k__BackingField:
+    <Direction>k__BackingField: {x: 0, y: 0}
+    <WalkRightStep>k__BackingField: {fileID: 0}
+    <WalkLeftStep>k__BackingField: {fileID: 0}
+    <RunRightStep>k__BackingField: {fileID: 0}
+    <RunLeftStep>k__BackingField: {fileID: 0}
+    <RunIdle>k__BackingField: {fileID: 0}
+    <Idle>k__BackingField: {fileID: 0}
+  <LeftAnimations>k__BackingField:
+    <Direction>k__BackingField: {x: 0, y: 0}
+    <WalkRightStep>k__BackingField: {fileID: 0}
+    <WalkLeftStep>k__BackingField: {fileID: 0}
+    <RunRightStep>k__BackingField: {fileID: 0}
+    <RunLeftStep>k__BackingField: {fileID: 0}
+    <RunIdle>k__BackingField: {fileID: 0}
+    <Idle>k__BackingField: {fileID: 0}
+  animatableMb: {fileID: 951062536}
+--- !u!212 &634529919
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 951062535}
+  m_GameObject: {fileID: 634529916}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -284,11 +328,43 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &951062535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 951062538}
+  - component: {fileID: 951062536}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &951062536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951062535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 306784825, guid: 45d942d87d3a5e01fbd366e78f61817c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SharpMonEngine.Unity.dll::SharpMonEngine.Unity.Player.PlayerMovement
+  walkSpeed: 4
+  runSpeed: 6
+  inputThreshold: 0.05
 --- !u!4 &951062538
 Transform:
   m_ObjectHideFlags: 0
@@ -301,53 +377,10 @@ Transform:
   m_LocalPosition: {x: 0.5, y: 0.5, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 634529917}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &951062539
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 951062535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 650290709, guid: 45d942d87d3a5e01fbd366e78f61817c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: SharpMonEngine.Unity.dll::SharpMonEngine.Unity.Sprites.OverworldCharacterAnimator
-  <UpAnimations>k__BackingField:
-    <Direction>k__BackingField: {x: 0, y: 1}
-    <WalkRightStep>k__BackingField: {fileID: -1984002365, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <WalkLeftStep>k__BackingField: {fileID: 1682990235, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunRightStep>k__BackingField: {fileID: 391071260, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunLeftStep>k__BackingField: {fileID: -1353485496, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunIdle>k__BackingField: {fileID: -149874838, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <Idle>k__BackingField: {fileID: -465380663, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-  <DownAnimations>k__BackingField:
-    <Direction>k__BackingField: {x: 0, y: -1}
-    <WalkRightStep>k__BackingField: {fileID: 1597551, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <WalkLeftStep>k__BackingField: {fileID: 1765248241, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunRightStep>k__BackingField: {fileID: 52336624, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunLeftStep>k__BackingField: {fileID: 1765837084, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunIdle>k__BackingField: {fileID: -481953507, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <Idle>k__BackingField: {fileID: -165831648, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-  <RightAnimations>k__BackingField:
-    <Direction>k__BackingField: {x: 1, y: 0}
-    <WalkRightStep>k__BackingField: {fileID: 1959381936, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <WalkLeftStep>k__BackingField: {fileID: 131530460, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunRightStep>k__BackingField: {fileID: 873870799, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunLeftStep>k__BackingField: {fileID: -1416054459, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunIdle>k__BackingField: {fileID: 1757995665, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <Idle>k__BackingField: {fileID: -726770422, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-  <LeftAnimations>k__BackingField:
-    <Direction>k__BackingField: {x: -1, y: 0}
-    <WalkRightStep>k__BackingField: {fileID: -994686919, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <WalkLeftStep>k__BackingField: {fileID: -1351200212, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunRightStep>k__BackingField: {fileID: 1012944852, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunLeftStep>k__BackingField: {fileID: -741120919, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunIdle>k__BackingField: {fileID: -1327508658, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <Idle>k__BackingField: {fileID: 2125839544, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
 --- !u!1 &1451618273
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,7 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 1051664851, guid: 45d942d87d3a5e01fbd366e78f61817c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SharpMonEngine.Unity.dll::SharpMonEngine.Unity.Controllers.MapController
-  _grid: {fileID: 0}
+  _grid: {fileID: 1451618276}
 --- !u!156049354 &1451618276
 Grid:
   m_ObjectHideFlags: 0
@@ -548,6 +581,7 @@ GameObject:
   - component: {fileID: 1561895599}
   - component: {fileID: 1561895598}
   - component: {fileID: 1561895601}
+  - component: {fileID: 1561895602}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -572,8 +606,8 @@ Camera:
   m_GameObject: {fileID: 1561895597}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -598,7 +632,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -655,7 +689,7 @@ MonoBehaviour:
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
-  m_StopNaN: 0
+  m_StopNaN: 1
   m_Dithering: 0
   m_ClearDepth: 1
   m_AllowXRRendering: 1
@@ -673,6 +707,30 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1561895602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561895597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.PixelPerfectCamera
+  m_ComponentVersion: 1
+  m_AssetsPPU: 16
+  m_RefResolutionX: 256
+  m_RefResolutionY: 192
+  m_CropFrame: 0
+  m_GridSnapping: 1
+  m_FilterMode: 0
+  m_UpscaleRT: 0
+  m_PixelSnapping: 0
+  m_CropFrameX: 0
+  m_CropFrameY: 0
+  m_StretchFill: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

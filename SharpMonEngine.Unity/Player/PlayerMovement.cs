@@ -54,18 +54,19 @@ namespace SharpMonEngine.Unity.Player
             bool movementPressed = _playerController!.Move.IsPressed();
 
             if (!movementPressed)
+            {
                 _inputHoldTime = 0f;
+            }
             else
+            {
                 _inputHoldTime += Time.deltaTime;
+            }
 
             if (IsMoving)
             {
                 MoveToTarget();
                 return;
             }
-
-            if (!movementPressed || _inputHoldTime < inputThreshold)
-                return;
 
             Vector2 input = _playerController.Move.ReadValue<Vector2>();
 
@@ -74,7 +75,9 @@ namespace SharpMonEngine.Unity.Player
 
             Direction = GetCardinalDirection(input);
 
-            _currentStepIsRunning = _playerController.Run.IsPressed();
+            if (!movementPressed || _inputHoldTime < inputThreshold)
+                return;
+
             StartStep();
         }
 
@@ -84,6 +87,7 @@ namespace SharpMonEngine.Unity.Player
             _targetPosition = _startPosition + Direction;
             _stepProgress = 0f;
             IsMoving = true;
+            _currentStepIsRunning = _playerController!.Run.IsPressed();
         }
 
         private void MoveToTarget()

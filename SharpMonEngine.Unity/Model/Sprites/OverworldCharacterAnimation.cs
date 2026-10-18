@@ -33,7 +33,13 @@ namespace SharpMonEngine.Unity.Model.Sprites
             if (!HasActiveSprite(direction))
                 return;
 
-            if (!isMoving || moveProgress >= 0.5f)
+            if (!isMoving)
+            {
+                spriteRenderer.sprite = Idle;
+                return;
+            }
+
+            if (moveProgress >= 0.5f)
             {
                 spriteRenderer.sprite = isRunning ? RunIdle : Idle;
                 return;

@@ -5,7 +5,6 @@ using UnityEngine;
 namespace SharpMonEngine.Unity.Sprites
 {
     [RequireComponent(typeof(SpriteRenderer))]
-    [RequireComponent(typeof(MonoBehaviour))]
     public class OverworldCharacterAnimator : MonoBehaviour
     {
         [field: SerializeField] public OverworldCharacterAnimation UpAnimations { get; set; } = null!;
@@ -13,31 +12,32 @@ namespace SharpMonEngine.Unity.Sprites
         [field: SerializeField] public OverworldCharacterAnimation RightAnimations { get; set; } = null!;
         [field: SerializeField] public OverworldCharacterAnimation LeftAnimations { get; set; } = null!;
 
-        private IOverworldCharacterAnimatable _animator = null!;
+        [SerializeField] private MonoBehaviour animatableMb = null!;
         private SpriteRenderer _spriteRenderer = null!;
+
+        private IOverworldCharacterAnimatable Animatable => (animatableMb as IOverworldCharacterAnimatable)!;
 
         private void Awake()
         {
-            _animator = GetComponent<IOverworldCharacterAnimatable>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _animator.OnStepCompleted += OnStepCompleted;
+            Animatable.OnStepCompleted += OnStepCompleted;
         }
 
         private void Update()
         {
-            OverworldCharacterAnimation? animation = GetAnimation(_animator.Direction);
+            OverworldCharacterAnimation? oveworldAnimation = GetAnimation(Animatable.Direction);
 
-            animation?.SetSprite(
+            oveworldAnimation?.SetSprite(
                 _spriteRenderer,
-                _animator.Direction,
-                _animator.MoveProgress,
-                _animator.IsMoving,
-                _animator.IsRunning);
+                Animatable.Direction,
+                Animatable.MoveProgress,
+                Animatable.IsMoving,
+                Animatable.IsRunning);
         }
 
         public void OnStepCompleted()
         {
-            GetAnimation(_animator.Direction)?.OnStepCompleted();
+            GetAnimation(Animatable.Direction)?.OnStepCompleted();
         }
 
         private OverworldCharacterAnimation? GetAnimation(Vector2 direction)
