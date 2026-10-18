@@ -328,8 +328,8 @@ MonoBehaviour:
     <Direction>k__BackingField: {x: 0, y: -1}
     <WalkRightStep>k__BackingField: {fileID: 1597551, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
     <WalkLeftStep>k__BackingField: {fileID: 1765248241, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunRightStep>k__BackingField: {fileID: 1597551, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
-    <RunLeftStep>k__BackingField: {fileID: 52336624, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
+    <RunRightStep>k__BackingField: {fileID: 52336624, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
+    <RunLeftStep>k__BackingField: {fileID: 1765837084, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
     <RunIdle>k__BackingField: {fileID: -481953507, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
     <Idle>k__BackingField: {fileID: -165831648, guid: ac2b0f4d16c2586339f2f5ef012bb9f2, type: 3}
   <RightAnimations>k__BackingField:
